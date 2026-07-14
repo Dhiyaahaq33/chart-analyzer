@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "$json = $input | ConvertFrom-Json; $fp = $json.tool_input.file_path; if ($fp -match 'client[\\/]src[\\/](engine|components|App\\.jsx)') { Write-Output '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"Source file modified. If this change affects app features, inputs, outputs, or how to run it — update README.md at D:\\\\BOT\\\\chart-analyzer\\\\README.md. Keep the Changelog section current with a short description of what changed.\"}}' }",
+            "statusMessage": "Checking if README needs update..."
+          }
+        ]
+      }
+    ]
+  }
+}
