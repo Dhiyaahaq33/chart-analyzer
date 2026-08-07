@@ -2,3 +2,8 @@ node_modules/
 server/.env
 dist/
 .DS_Store
+.claude/
+*.log
+backtest_out.txt
+*.timestamp-*.mjs
+.claude/worktrees/
