@@ -39,6 +39,8 @@ jobs:
       - name: Build
         run: npm run build
         working-directory: client
+        env:
+          VITE_API_URL: https://chart-analyzer-server.vercel.app
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
