@@ -1,4 +1,5 @@
-const SERVER_URL = 'http://localhost:3001/api/vision-extract';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const SERVER_URL = `${API_BASE}/api/vision-extract`;
 
 /** Convert File to base64 string (without data: prefix) */
 function fileToBase64(file) {

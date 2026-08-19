@@ -13,8 +13,7 @@ const PORT = process.env.PORT || 3001;
 const ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:5174',
-  // Add your GitHub Pages / Vercel URL here after deploy
-  // e.g. 'https://yourusername.github.io',
+  'https://dhiyaahaq33.github.io',
 ];
 
 app.use(cors({
@@ -146,8 +145,12 @@ app.use((err, _req, res, _next) => {
   res.status(400).json({ error: err.message });
 });
 
-app.listen(PORT, () => {
-  console.log(`Chart Analyzer server on http://localhost:${PORT}`);
-  console.log(`NVIDIA key: ${process.env.NVIDIA_API_KEY ? '✅ set' : '❌ MISSING'}`);
-  console.log(`Twelve Data key: ${process.env.TWELVEDATA_API_KEY ? '✅ set' : '❌ MISSING'}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Chart Analyzer server on http://localhost:${PORT}`);
+    console.log(`NVIDIA key: ${process.env.NVIDIA_API_KEY ? '✅ set' : '❌ MISSING'}`);
+    console.log(`Twelve Data key: ${process.env.TWELVEDATA_API_KEY ? '✅ set' : '❌ MISSING'}`);
+  });
+}
+
+export default app;

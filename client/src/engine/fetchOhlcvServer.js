@@ -1,4 +1,5 @@
-const SERVER_URL = 'http://localhost:3001/api/ohlcv';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const SERVER_URL = `${API_BASE}/api/ohlcv`;
 
 /** Forex/Stocks candle auto-fetch via local server proxy (Twelve Data — needs
  *  TWELVEDATA_API_KEY in server/.env). Crypto uses Binance directly and doesn't

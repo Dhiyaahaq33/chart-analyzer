@@ -1,4 +1,5 @@
-const SERVER_URL = 'http://localhost:3001/api/nemotron-reasoning';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const SERVER_URL = `${API_BASE}/api/nemotron-reasoning`;
 
 /** Ask NVIDIA's Llama-3.1-Nemotron-Nano-8B-v1 (via local server proxy — NVIDIA's API has no
  *  CORS support for direct browser calls) for a plain-language reasoning summary of an
