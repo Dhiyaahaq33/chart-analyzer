@@ -78,16 +78,19 @@ app.post('/api/vision-extract', async (req, res) => {
   if (!process.env.NVIDIA_API_KEY) {
     return res.status(500).json({ error: 'NVIDIA_API_KEY is not set on the server.' });
   }
-  const { image, mimeType } = req.body;
+  const { image, mimeType, market } = req.body;
   if (!image || typeof image !== 'string') {
     return res.status(400).json({ error: 'Missing "image" (base64) in request body.' });
   }
   if (!ALLOWED_IMAGE_TYPES.includes(mimeType)) {
     return res.status(400).json({ error: 'mimeType must be one of ' + ALLOWED_IMAGE_TYPES.join(', ') });
   }
+  if (market && !['crypto', 'forex', 'stocks'].includes(market)) {
+    return res.status(400).json({ error: 'Invalid market. Use "crypto", "forex", or "stocks".' });
+  }
 
   try {
-    const extracted = await extractChartData(image, mimeType, process.env.NVIDIA_API_KEY);
+    const extracted = await extractChartData(image, mimeType, process.env.NVIDIA_API_KEY, market || 'crypto');
     res.json({ extracted });
   } catch (err) {
     console.error('Vision extract error:', err);

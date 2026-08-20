@@ -52,7 +52,7 @@ export default function ScreenshotInput({
   async function extractWithNemotronVL(imageFile) {
     setGLoading(true); setGError('');
     try {
-      const extracted = await getVisionExtract(imageFile);
+      const extracted = await getVisionExtract(imageFile, market);
       setGExtract(extracted);
       return extracted;
     } catch (e) {
