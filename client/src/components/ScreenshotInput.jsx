@@ -168,7 +168,7 @@ export default function ScreenshotInput({
       {/* Vision loading / extracted preview */}
       {geminiLoading && (
         <div style={{ fontSize: '12px', color: accent, textAlign: 'center', padding: '8px' }}>
-          🔍 Reading chart with Nemotron VL…
+          🔍 Reading chart with vision AI…
         </div>
       )}
       {geminiExtract && !geminiLoading && (
@@ -255,7 +255,7 @@ function GeminiPreview({ data, accent }) {
   return (
     <div style={{ background: 'rgba(20,184,166,0.06)', border: '1px solid rgba(20,184,166,0.25)', borderRadius: '8px', padding: '12px' }}>
       <div style={{ fontSize: '11px', color: '#2dd4bf', fontWeight: 700, letterSpacing: '0.08em', marginBottom: '8px', textTransform: 'uppercase' }}>
-        🔍 Nemotron VL Extracted Data
+        🔍 Vision Model Extracted Data
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px' }}>
         {rows.map(([label, value]) => (

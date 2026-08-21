@@ -207,7 +207,7 @@ export default function App() {
           <TabBar active={market} onChange={switchMarket} />
 
           <div style={{ fontSize: '12px', color: accent, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-            {market === 'crypto' && '⚡ Crypto — Nemotron VL reads CVD/OI/FR · Binance auto-fetch · OHLCV engine'}
+            {market === 'crypto' && '⚡ Crypto — Vision model reads CVD/OI/FR · Binance auto-fetch · OHLCV engine'}
             {market === 'forex'  && '🌐 Forex — HTF Bias · Session · Institutional levels'}
             {market === 'stocks' && '📈 Stocks — Volume · Wyckoff · MA alignment'}
           </div>
@@ -215,7 +215,7 @@ export default function App() {
           {/* Mode toggle */}
           <div style={{ display: 'flex', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '8px', padding: '4px', gap: '4px' }}>
             {[
-              { id: 'screenshot', label: '📸 Screenshot + Nemotron VL', desc: 'Vision extraction, requires local server' },
+              { id: 'screenshot', label: '📸 Screenshot + Vision AI', desc: 'Vision extraction via server' },
               { id: 'csv',        label: '📊 CSV Data (Offline)',       desc: 'Browser engine, no server needed' },
             ].map(m => (
               <button key={m.id} onClick={() => switchMode(m.id)} style={{
@@ -403,7 +403,7 @@ function analyzeFromExtract(market, gemini, opts, symbol, timeframe, tradeStyle)
 
   return [
     `BIAS: ${bias}`,
-    `PATTERN: ${trend === 'bullish' ? 'Visual uptrend' : trend === 'bearish' ? 'Visual downtrend' : 'Ranging / unclear'} (Nemotron VL visual read)`,
+    `PATTERN: ${trend === 'bullish' ? 'Visual uptrend' : trend === 'bearish' ? 'Visual downtrend' : 'Ranging / unclear'} (vision model read)`,
     `ENTRY ZONE: See chart — load CSV for calculated levels`,
     `STOP: Use nearest visible support/resistance on chart`,
     `TARGET 1: Use next visible resistance/support on chart`,
@@ -411,7 +411,7 @@ function analyzeFromExtract(market, gemini, opts, symbol, timeframe, tradeStyle)
     `CONFIDENCE: ${confidence}`,
     ofParts.length ? `ORDER FLOW: ${ofParts.join(' · ')}` : null,
     warnings.length ? `WARNINGS: ${warnings.join(' | ')}` : null,
-    `NOTES: Nemotron VL visual: ${trend} trend. ${rsiLine}. Volume: ${volNote}. Symbol: ${symbol ?? 'unknown'}, TF: ${timeframe ?? 'unknown'}.`,
+    `NOTES: Vision model visual: ${trend} trend. ${rsiLine}. Volume: ${volNote}. Symbol: ${symbol ?? 'unknown'}, TF: ${timeframe ?? 'unknown'}.`,
     ``,
     `Not financial advice. Technical analysis only.`,
   ].filter(Boolean).join('\n');

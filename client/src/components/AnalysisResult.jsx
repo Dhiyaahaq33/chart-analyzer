@@ -137,13 +137,13 @@ function NemotronPanel({ accent, loading, reasoning, error, onRequest }) {
           fontWeight: 600, fontSize: '12px', cursor: loading ? 'default' : 'pointer',
           opacity: loading ? 0.6 : 1,
         }}>
-          {loading ? '🧠 Thinking…' : '🧠 AI Reasoning (Nemotron Nano 8B, requires local server)'}
+          {loading ? '🧠 Thinking…' : '🧠 AI Reasoning (Nemotron 30B)'}
         </button>
       )}
       {reasoning && (
         <div style={{ background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.3)', borderRadius: '10px', padding: '14px 16px' }}>
           <div style={{ fontSize: '11px', color: '#a78bfa', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>
-            🧠 Nemotron Nano 8B — Reasoning
+            🧠 Nemotron 30B — Reasoning
           </div>
           <div style={{ fontSize: '13px', lineHeight: 1.6, color: 'var(--text)', whiteSpace: 'pre-wrap' }}>{reasoning}</div>
           <div style={{ fontSize: '10px', color: 'var(--muted)', marginTop: '8px' }}>
@@ -187,7 +187,7 @@ function GeminiPanel({ data, frOiData, accent }) {
   return (
     <div style={{ background: 'rgba(20,184,166,0.06)', border: '1px solid rgba(20,184,166,0.3)', borderRadius: '10px', padding: '16px 20px' }}>
       <div style={{ fontSize: '11px', color: '#2dd4bf', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '12px' }}>
-        🔍 Nemotron VL — Extracted Values
+        🔍 Vision Model — Extracted Values
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '6px 16px' }}>
         {[...rows, ...binanceRows].map(({ label, value, color }) => (
