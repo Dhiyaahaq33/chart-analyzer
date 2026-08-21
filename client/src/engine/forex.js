@@ -73,8 +73,11 @@ export function analyzeForex(candles, opts = {}) {
     if (price > ma50 && price > ma200 && ma50 > ma200)   bias = 'Bullish';
     else if (price < ma50 && price < ma200 && ma50 < ma200) bias = 'Bearish';
   } else {
-    if (price > ma20 && price > ma50 && ma20 > ma50)     bias = 'Bullish';
-    else if (price < ma20 && price < ma50 && ma20 < ma50) bias = 'Bearish';
+    // 0.5×ATR buffer around MA20 for consistency with crypto/stocks — see those
+    // engines for why a bare pullback-to-MA20 shouldn't flip bias to Neutral.
+    const maBuffer = lastAtr * 0.5;
+    if (price > ma20 - maBuffer && price > ma50 && ma20 > ma50)     bias = 'Bullish';
+    else if (price < ma20 + maBuffer && price < ma50 && ma20 < ma50) bias = 'Bearish';
   }
 
   // ── HTF conflict check ───────────────────────────────────

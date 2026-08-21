@@ -100,9 +100,14 @@ export function analyzeCrypto(candles, opts = {}) {
                                 'Consolidation / Ranging';
 
   // ── Bias (MA alignment) ──────────────────────────────────
+  // A 0.5×ATR buffer around MA20 lets a normal pullback-to-MA20 still count as
+  // aligned — without it, the entry logic below (which explicitly targets a
+  // pullback to MA20) can never fire: the moment price touches MA20, bias would
+  // flip to Neutral and gate the exact entry it was waiting for.
+  const maBuffer = lastAtr * 0.5;
   let bias = 'Neutral';
-  if (price > ma20 && price > ma50 && ma20 > ma50) bias = 'Bullish';
-  else if (price < ma20 && price < ma50 && ma20 < ma50) bias = 'Bearish';
+  if (price > ma20 - maBuffer && price > ma50 && ma20 > ma50) bias = 'Bullish';
+  else if (price < ma20 + maBuffer && price < ma50 && ma20 < ma50) bias = 'Bearish';
 
   // Override/supplement with Gemini visual trend if candle bias is neutral
   if (bias === 'Neutral' && hasGemini && geminiExtract.trend_visual) {

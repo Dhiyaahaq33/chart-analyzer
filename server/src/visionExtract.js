@@ -1,5 +1,9 @@
 const NVIDIA_API_URL = 'https://integrate.api.nvidia.com/v1/chat/completions';
-const MODEL = 'nvidia/llama-3.1-nemotron-nano-vl-8b-v1';
+// Was nvidia/llama-3.1-nemotron-nano-vl-8b-v1 (8B) — too small, routinely hallucinated
+// values for fields it couldn't find on screen (echoed price into CVD, RSI out of 0-100
+// range, garbage funding-rate percentages). 90B has much stronger instruction-following
+// for "return null if not visible" and reads small chart labels more reliably.
+const MODEL = 'meta/llama-3.2-90b-vision-instruct';
 
 // Crypto perpetual-futures charts (Binance/Bybit style) carry CVD/OI/Funding overlays.
 // Forex and stock charts never do — asking the 8B model for fields that aren't on

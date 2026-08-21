@@ -85,9 +85,14 @@ export function analyzeStocks(candles, opts = {}) {
   }
 
   // ── Trend + phase ────────────────────────────────────────
+  // A 0.5×ATR buffer around MA20 lets a normal pullback-to-MA20 still count as
+  // aligned — without it, the entry logic below (which explicitly targets a
+  // pullback to MA20) can never fire: the moment price touches MA20, bias would
+  // flip to Neutral and gate the exact entry it was waiting for.
+  const maBuffer = lastAtr * 0.5;
   let bias = 'Neutral';
-  if (price > ma20 && price > ma50 && ma20 > ma50) bias = 'Bullish';
-  else if (price < ma20 && price < ma50 && ma20 < ma50) bias = 'Bearish';
+  if (price > ma20 - maBuffer && price > ma50 && ma20 > ma50) bias = 'Bullish';
+  else if (price < ma20 + maBuffer && price < ma50 && ma20 < ma50) bias = 'Bearish';
 
   const { phase, volFavoring } = detectWyckoffPhase(price, closes, volumes, ma20, ma50, ma200);
   const { structure, sh, sl }  = detectTrendStructure(highs, lows, 50, 5);

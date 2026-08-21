@@ -198,7 +198,7 @@ function GeminiPanel({ data, frOiData, accent }) {
         ))}
       </div>
       <div style={{ marginTop: '8px', fontSize: '10px', color: 'var(--muted)' }}>
-        Values extracted from screenshot by NVIDIA Nemotron Nano VL 8B · Live FR/OI from Binance
+        Values extracted from screenshot by Llama 3.2 90B Vision · Live FR/OI from Binance
       </div>
     </div>
   );

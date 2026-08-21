@@ -189,7 +189,7 @@ export default function App() {
       <div style={{ marginBottom: '28px', textAlign: 'center' }}>
         <h1 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '4px' }}>Chart Analyzer</h1>
         <p style={{ color: 'var(--muted)', fontSize: '13px' }}>
-          Screenshot → NVIDIA Nemotron VL (local server) · CSV → Rule-based engine · FR/OI auto-fetch
+          Screenshot → Llama 3.2 90B Vision (server) · CSV → Rule-based engine · FR/OI auto-fetch
         </p>
       </div>
 

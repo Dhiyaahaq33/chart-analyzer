@@ -192,7 +192,7 @@ export default function ScreenshotInput({
       </button>
 
       <p style={{ fontSize: '11px', color: 'var(--muted)', textAlign: 'center' }}>
-        NVIDIA Nemotron Nano VL reads CVD/OI/Funding from screenshot · requires local server running
+        Llama 3.2 90B Vision reads chart values from screenshot (crypto: CVD/OI/Funding too)
       </p>
     </div>
   );
