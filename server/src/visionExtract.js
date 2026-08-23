@@ -48,40 +48,72 @@ If a value is not visible in the chart, return null for that field.
 Numbers must be plain JSON numbers with NO thousand separators — write 4514.5, never 4,514.5.
 Return ONLY the JSON object, no explanation.`;
 
-/** Read chart data off a screenshot via NVIDIA's Nemotron Nano VL 8B.
- *  Server-side only — NVIDIA's API has no CORS support for direct browser calls.
- *  @param {'crypto'|'forex'|'stocks'} market — selects which fields the model is asked for. */
-export async function extractChartData(base64Image, mimeType, apiKey, market = 'crypto') {
-  const EXTRACT_PROMPT = market === 'crypto' ? CRYPTO_EXTRACT_PROMPT : SPOT_EXTRACT_PROMPT;
-  const response = await fetch(NVIDIA_API_URL, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: MODEL,
-      messages: [{
-        role: 'user',
-        content: [
-          { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64Image}` } },
-          { type: 'text', text: EXTRACT_PROMPT },
-        ],
-      }],
-      temperature: 0.2,
-      max_tokens: 512,
-    }),
-  });
+// Per-attempt hard timeout, well under Vercel's function ceiling (60s, see
+// server/src/index.js's `config.maxDuration`) — a hung first attempt must not
+// eat the whole budget and leave no room for the retry below.
+const ATTEMPT_TIMEOUT_MS = 25_000;
+const RETRY_DELAY_MS = 500;
+
+async function attemptExtract(base64Image, mimeType, apiKey, EXTRACT_PROMPT) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ATTEMPT_TIMEOUT_MS);
+
+  let response;
+  try {
+    response = await fetch(NVIDIA_API_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64Image}` } },
+            { type: 'text', text: EXTRACT_PROMPT },
+          ],
+        }],
+        // 0, not a bit of randomness — this is extraction, not writing, and the
+        // same chart should read the same way every time.
+        temperature: 0,
+        max_tokens: 512,
+      }),
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timer);
+  }
 
   const data = await response.json();
   if (!response.ok) {
-    throw new Error('Vision extract: ' + (data.error?.message || `HTTP ${response.status}`));
+    const err = new Error('Vision extract: ' + (data.error?.message || `HTTP ${response.status}`));
+    err.status = response.status;
+    throw err;
   }
 
   const text = data.choices[0].message.content;
   const extracted = parseJsonLoose(text);
   sanitizeExtracted(extracted);
   return extracted;
+}
+
+/** Read chart data off a screenshot via NVIDIA's hosted vision model.
+ *  Server-side only — NVIDIA's API has no CORS support for direct browser calls.
+ *  Retries once on transient failure (network error, timeout, malformed JSON, 5xx) —
+ *  but not on a 4xx (bad request/auth), which won't fix itself on retry.
+ *  @param {'crypto'|'forex'|'stocks'} market — selects which fields the model is asked for. */
+export async function extractChartData(base64Image, mimeType, apiKey, market = 'crypto') {
+  const EXTRACT_PROMPT = market === 'crypto' ? CRYPTO_EXTRACT_PROMPT : SPOT_EXTRACT_PROMPT;
+
+  try {
+    return await attemptExtract(base64Image, mimeType, apiKey, EXTRACT_PROMPT);
+  } catch (err) {
+    if (err.status != null && err.status < 500) throw err; // client/auth error — retrying won't help
+    await new Promise(r => setTimeout(r, RETRY_DELAY_MS));
+    return attemptExtract(base64Image, mimeType, apiKey, EXTRACT_PROMPT);
+  }
 }
 
 /** The 8B model is inconsistent about admitting it can't see CVD/OI/Funding —

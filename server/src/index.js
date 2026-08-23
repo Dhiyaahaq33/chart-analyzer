@@ -10,6 +10,12 @@ import { fetchOhlcv } from './fetchOhlcv.js';
 const app  = express();
 const PORT = process.env.PORT || 3001;
 
+// Vercel-native way to raise this function's execution ceiling above the plan
+// default. On Hobby the platform still clamps to whatever Hobby actually allows —
+// this just claims the max available rather than leaving it at whatever the
+// unconfigured default is, since the 90B vision model can run close to it.
+export const config = { maxDuration: 60 };
+
 const ALLOWED_ORIGINS = [
   'http://localhost:5173',
   'http://localhost:5174',
